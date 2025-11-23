@@ -1,31 +1,49 @@
-# Debian fully automatic install through ISO remastering
-Script and configuration to remaster a debian netinst ISO for 100% unattended install
+# Fully automatic installation of Debian 13 through ISO remastering
+
+Script and configuration to remaster a debian netinst ISO for 100% unattended
+install. This was based on my previous 
+[Debian 11 preseed](https://github.com/istepaniuk/debian11-preseed) project.
 
 Usage:
-1. Download a [debian "netinst"](https://www.debian.org/CD/netinst/) image (tested with bullseye)
-2. Adapt the preseed.cfg file to your needs. (This one installs just SSH and sudo)
+
+1. Download a [debian "netinst"](https://www.debian.org/CD/netinst/) image.
+   (Tested with 13.2)
+2. Adapt the preseed.cfg file to your needs. (This one installs just SSH and
+   sudo)
 3. Run:
+
 ```
-./make-preseed-iso.sh debian-11.0.0-amd64-netinst.iso
+./make-preseed-iso.sh debian-13.2.0-amd64-netinst.iso
 ```
-This will create a new ISO image named `preseed-debian-11.0.0-amd64-netinst.iso` that
-installs debian on the first available disk without intervention, not even a boot menu prompt.
 
-### WARNING: This deletes stuff!
+This will create a new ISO image named `preseed-debian-13.2.0-amd64-netinst.iso`
+which installs Debian on the first available disk without intervention, not even
+a boot menu prompt.
 
-The preseed.cfg that in this repository ***completely erases the first disk\*\****
+### WARNING: This deletes stuff!!!
 
-> ** as returned by `list-devices disk`, excluding usb
+The preseed.cfg that in this repository ***completely erases the first 
+disk\*\****
 
-Also... open the script and read what it does. I made this for myself because I'm tired of hitting
-enter 40 times everytime I need to install debian.
+> ** as returned by `list-devices disk`, so excluding usb
 
-The location of the initrd is hardcoded to 'install.amd', this needs to be changed if you are using an iso
-for other than amd64.
+Also... open the script and _read_ what it does. I made this for myself because
+I'm tired of hitting enter 40 times everytime I need to install debian.
 
-The configuration for the boot menu options is specific to bullseye in the case of a UEFI system because grub uses the position of the entry to specify the default option.
+The automatic partitioning recipe for `partman` creates a 50MB EFI partition 
+and used the rest of the disk for a single ext4 root partition. Adjust to your
+needs. Travelers beware: `partman` is very finicky, test *one* change at a time
+using a VM.
+
+The location of the initrd is hardcoded to 'install.amd', this needs to be
+changed if you are using an iso for other than amd64.
+
+In the case of a UEFI system, the configuration for the boot menu options is
+specific to this Debian version. This is because grub uses the position of the
+entry to specify the default option.
 
 ### More on how to preseed
+
 * https://wiki.debian.org/DebianInstaller/Preseed
 * https://wiki.debian.org/DebianInstaller/Preseed/EditIso
 * https://wiki.debian.org/RepackBootableISO
